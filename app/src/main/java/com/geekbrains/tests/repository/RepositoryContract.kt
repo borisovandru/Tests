@@ -1,6 +1,4 @@
-package com.geekbrains.tests.presenter
-
-import com.geekbrains.tests.repository.RepositoryCallback
+package com.geekbrains.tests.repository
 
 internal interface RepositoryContract {
     fun searchGithub(
