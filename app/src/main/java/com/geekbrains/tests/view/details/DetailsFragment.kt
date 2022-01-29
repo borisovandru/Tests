@@ -10,14 +10,14 @@ import com.geekbrains.tests.R
 import com.geekbrains.tests.presenter.details.DetailsPresenter
 import com.geekbrains.tests.presenter.details.PresenterDetailsContract
 import kotlinx.android.synthetic.main.fragment_details.*
-import java.util.*
+import java.util.Locale
 
 class DetailsFragment : Fragment(), ViewDetailsContract {
 
-    private val presenter: PresenterDetailsContract = DetailsPresenter(this)
-
+    private val presenter: PresenterDetailsContract = DetailsPresenter()
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
+        inflater: LayoutInflater,
+        container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         return inflater.inflate(R.layout.fragment_details, container, false)
@@ -25,6 +25,7 @@ class DetailsFragment : Fragment(), ViewDetailsContract {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        presenter.attach(this)
         setUI()
     }
 
@@ -43,16 +44,28 @@ class DetailsFragment : Fragment(), ViewDetailsContract {
     }
 
     private fun setCountText(count: Int) {
-        totalCountTextView.text =
-            String.format(Locale.getDefault(), getString(R.string.results_count), count)
+        totalCountDetailTextView.text =
+            String.format(
+                Locale.getDefault(), getString(R.string.results_count),
+                count
+            )
     }
 
     companion object {
-
         private const val TOTAL_COUNT_EXTRA = "TOTAL_COUNT_EXTRA"
 
         @JvmStatic
         fun newInstance(counter: Int) =
-            DetailsFragment().apply { arguments = bundleOf(TOTAL_COUNT_EXTRA to counter) }
+            DetailsFragment().apply {
+                arguments = bundleOf(
+                    TOTAL_COUNT_EXTRA to
+                            counter
+                )
+            }
+    }
+
+    override fun onDestroy() {
+        presenter.detach(this)
+        super.onDestroy()
     }
 }
